@@ -40,6 +40,55 @@ protocol-porting/
 Generated files stay under `build/`; the upstream source tree is not used as
 an in-place build directory.
 
+## Quick Build
+
+The recommended entry point is `scripts/build.sh`:
+
+```bash
+# Build native static libraries and all native test programs.
+./scripts/build.sh host
+
+# Run the native Modbus TCP, Modbus RTU PTY, and IEC104 tests.
+./scripts/build.sh test
+
+# Build the AArch64 static libraries and target smoke programs.
+./scripts/build.sh target
+
+# Build both host and target outputs, then run native tests.
+./scripts/build.sh all
+
+# Remove generated output only.
+./scripts/build.sh clean
+```
+
+The scripts use these fixed output locations:
+
+```text
+build/host/          native static libraries and headers
+build/target-aarch64/ AArch64 static libraries and headers
+build/host-tests/    native simulation executables
+build/target-tests/  AArch64 smoke executables
+```
+
+The `target` command requires these tools in `PATH`:
+
+```text
+aarch64-linux-gnu-gcc
+aarch64-linux-gnu-g++
+aarch64-linux-gnu-ar
+aarch64-linux-gnu-ranlib
+```
+
+After `./scripts/build.sh target`, copy these files to the board for the
+first library-level check:
+
+```text
+build/target-tests/libmodbus-smoke
+build/target-tests/lib60870-smoke
+build/target-aarch64/include/
+build/target-aarch64/lib/
+```
+
 ## Native Build
 
 The source uses Autotools. The native static build was verified with:
